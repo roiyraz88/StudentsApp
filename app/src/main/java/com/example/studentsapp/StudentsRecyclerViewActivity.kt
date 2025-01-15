@@ -1,5 +1,6 @@
 package com.example.studentsapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studentsapp.model.Model
 import com.example.studentsapp.model.Student
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 interface OnItemClickListener {
     fun onItemClick(position: Int)
@@ -35,6 +37,13 @@ class StudentsRecyclerViewActivity : AppCompatActivity() {
             insets
         }
 
+        // Add FloatingActionButton
+        val fab: FloatingActionButton = findViewById(R.id.add_student_fab)
+        fab.setOnClickListener {
+            val intent = Intent(this, AddStudentActivity::class.java)
+            startActivity(intent)
+        }
+
         val recyclerView: RecyclerView = findViewById(R.id.students_recycler_view)
         recyclerView.setHasFixedSize(true)
 
@@ -42,7 +51,7 @@ class StudentsRecyclerViewActivity : AppCompatActivity() {
         recyclerView.layoutManager = layoutManager
 
         val adapter = StudentRecyclerAdapter(students)
-        adapter.listener = object : OnItemClickListener{
+        adapter.listener = object : OnItemClickListener {
             override fun onItemClick(position: Int) {
                 Log.d("TAG", "On click listener on position: $position")
             }
@@ -68,13 +77,10 @@ class StudentsRecyclerViewActivity : AppCompatActivity() {
                     }
                 }
             }
-            itemView.setOnClickListener{
+            itemView.setOnClickListener {
                 listener?.onItemClick(adapterPosition)
             }
-
         }
-
-
 
         fun bind(student: Student?, position: Int) {
             this.student = student
@@ -87,9 +93,9 @@ class StudentsRecyclerViewActivity : AppCompatActivity() {
         }
     }
 
-     class StudentRecyclerAdapter(private val students: MutableList<Student>?) : RecyclerView.Adapter<StudentViewHolder>() {
+    class StudentRecyclerAdapter(private val students: MutableList<Student>?) : RecyclerView.Adapter<StudentViewHolder>() {
 
-         var listener: OnItemClickListener? = null
+        var listener: OnItemClickListener? = null
 
         override fun getItemCount(): Int = students?.size ?: 0
 
