@@ -1,5 +1,6 @@
 package com.example.studentsapp
 
+import Student
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -15,8 +16,8 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studentsapp.model.Model
-import com.example.studentsapp.model.Student
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+
 
 interface OnItemClickListener {
     fun onItemClick(position: Int)
@@ -53,9 +54,14 @@ class StudentsRecyclerViewActivity : AppCompatActivity() {
         val adapter = StudentRecyclerAdapter(students)
         adapter.listener = object : OnItemClickListener {
             override fun onItemClick(position: Int) {
-                Log.d("TAG", "On click listener on position: $position")
+                val selectedStudent = students[position]
+                val intent = Intent(this@StudentsRecyclerViewActivity , StudentDetailsActivity::class.java)
+                intent.putExtra("student", selectedStudent)
+                startActivity(intent)
+
             }
         }
+
         recyclerView.adapter = adapter
     }
 

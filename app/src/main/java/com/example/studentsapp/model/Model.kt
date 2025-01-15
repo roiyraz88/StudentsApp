@@ -1,5 +1,7 @@
 package com.example.studentsapp.model
 
+import Student
+
 class Model private constructor(){
 
     val students: MutableList<Student> = ArrayList()
