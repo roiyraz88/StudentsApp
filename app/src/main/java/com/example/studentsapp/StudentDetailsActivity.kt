@@ -26,17 +26,14 @@ class StudentDetailsActivity : AppCompatActivity() {
 
         val student = intent.getSerializableExtra("student") as? Student
 
-        // הצגת המידע של הסטודנט
         nameTextView.text = student?.name ?: "No name"
         idTextView.text = student?.id ?: "No ID"
 
-        // הצגת ה-avatar של הסטודנט (תמונה מקומית)
-        avatarImageView.setImageResource(R.drawable.man)  // הצגת תמונה מקומית
+        avatarImageView.setImageResource(R.drawable.man)
 
-        // הגדרת כפתור עריכה
         editButton.setOnClickListener {
             val intent = Intent(this, EditStudentActivity::class.java)
-            intent.putExtra("student", student)  // העברת הסטודנט לדף העריכה
+            intent.putExtra("student", student)
             startActivity(intent)
         }
     }
