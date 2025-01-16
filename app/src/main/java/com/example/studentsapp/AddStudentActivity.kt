@@ -1,5 +1,6 @@
 package com.example.studentsapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -8,6 +9,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.studentsapp.model.Model
+import com.example.studentsapp.model.Student
 
 class AddStudentActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,9 +42,23 @@ class AddStudentActivity : AppCompatActivity() {
             if (name.isEmpty() || id.isEmpty()) {
                 saveMessageTextView.text = "Please fill in all fields"
             } else {
-                saveMessageTextView.text = "${nameEditText.text} with ID ${idEditText.text} saved successfully!"
+                val newStudent = Student(
+                    name = name,
+                    id = id,
+                    avatarUrl = "",
+                    isChecked = false
+                )
+
+
+                Model.shared.students.add(newStudent)
+
+
+                val intent = Intent(this, StudentsRecyclerViewActivity::class.java)
+                startActivity(intent)
+
+
+                finish()
             }
         }
-
     }
 }
