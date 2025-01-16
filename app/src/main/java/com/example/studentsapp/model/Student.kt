@@ -1,8 +1,9 @@
-package com.example.studentsapp.model
+import java.io.Serializable
 
 data class Student(
-    val name: String,
-    val id: String,
-    val avatarUrl: String,
+    var name: String,
+    var id: String,
+    var avatarUrl: String,
     var isChecked: Boolean
-)
+) : Serializable
+
