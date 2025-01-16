@@ -2,21 +2,24 @@ package com.example.studentsapp.model
 
 import Student
 
-class Model private constructor(){
+class Model private constructor() {
 
-    val students: MutableList<Student> = ArrayList()
+    val students: MutableList<Student> = mutableListOf()
 
-    companion object{
-        val shared = Model()
+    companion object {
+        val shared: Model by lazy { Model() }
     }
 
     init {
-            val student = Student(
-                name = "John Doe",
-                id = "123456",
-                avatarUrl = "",
-                isChecked = false
-            )
-            students.add(student)
-        }
+        // Sample data for testing
+        val sampleStudent = Student(
+            name = "John Doe",
+            id = "123456",
+            phone = "123-456-7890",
+            address = "123 Main St",
+            avatarUrl = "",
+            isChecked = false
+        )
+        students.add(sampleStudent)
     }
+}
