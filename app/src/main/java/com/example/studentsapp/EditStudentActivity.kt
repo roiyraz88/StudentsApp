@@ -20,6 +20,7 @@ class EditStudentActivity : AppCompatActivity() {
     private lateinit var checkBoxIsChecked: CheckBox
     private lateinit var buttonCancel: Button
     private lateinit var buttonSave: Button
+    private lateinit var buttonDelete: Button
     private var student: Student? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,6 +36,7 @@ class EditStudentActivity : AppCompatActivity() {
         checkBoxIsChecked = findViewById(R.id.checkBoxIsChecked)
         buttonCancel = findViewById(R.id.buttonCancel)
         buttonSave = findViewById(R.id.buttonSave)
+        buttonDelete = findViewById(R.id.buttonDelete)
 
         // Get student from intent
         student = intent.getSerializableExtra("student") as? Student
@@ -71,6 +73,23 @@ class EditStudentActivity : AppCompatActivity() {
         // Cancel button logic
         buttonCancel.setOnClickListener {
             finish()
+        }
+
+        // Delete button logic
+        buttonDelete.setOnClickListener {
+            student?.let {
+                val index = Model.shared.students.indexOfFirst { it.id == student?.id }
+                if (index != -1) {
+                    // Remove student from shared list
+                    Model.shared.students.removeAt(index)
+                }
+
+                // Return directly to StudentsRecyclerViewActivity
+                val resultIntent = Intent()
+                resultIntent.putExtra("deletedStudentId", student?.id)
+                setResult(RESULT_OK, resultIntent)
+                finish() // Close EditStudentActivity
+            }
         }
     }
 }

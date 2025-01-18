@@ -23,17 +23,22 @@ class StudentRecyclerAdapter(private val students: MutableList<Student>) :
         private val idTextView: TextView = itemView.findViewById(R.id.student_row_id_text_view)
         private val studentCheckBox: CheckBox = itemView.findViewById(R.id.student_row_check_box)
 
-        fun bind(student: Student) {
+        fun bind(student: Student, position: Int) {
             nameTextView.text = student.name
             idTextView.text = student.id
+
+            // Avoid triggering onCheckedChange unnecessarily
+            studentCheckBox.setOnCheckedChangeListener(null)
             studentCheckBox.isChecked = student.isChecked
 
+            // Update the student object when the checkbox is toggled
             studentCheckBox.setOnCheckedChangeListener { _, isChecked ->
                 student.isChecked = isChecked
             }
 
+            // Handle item clicks
             itemView.setOnClickListener {
-                listener?.onItemClick(adapterPosition)
+                listener?.onItemClick(position)
             }
         }
     }
@@ -45,7 +50,10 @@ class StudentRecyclerAdapter(private val students: MutableList<Student>) :
     }
 
     override fun onBindViewHolder(holder: StudentViewHolder, position: Int) {
-        holder.bind(students[position])
+        // Ensure position is valid before binding
+        if (position in students.indices) {
+            holder.bind(students[position], position)
+        }
     }
 
     override fun getItemCount(): Int = students.size
