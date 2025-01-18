@@ -21,6 +21,7 @@ class EditStudentActivity : AppCompatActivity() {
     private lateinit var buttonCancel: Button
     private lateinit var buttonSave: Button
     private var student: Student? = null
+    private var originalId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +40,7 @@ class EditStudentActivity : AppCompatActivity() {
         // Get student from intent
         student = intent.getSerializableExtra("student") as? Student
         student?.let {
+            originalId = it.id
             editTextName.setText(it.name)
             editTextId.setText(it.id)
             editTextPhone.setText(it.phone)
@@ -49,15 +51,16 @@ class EditStudentActivity : AppCompatActivity() {
         // Save button logic
         buttonSave.setOnClickListener {
             student?.apply {
-                name = editTextName.text.toString()
-                id = editTextId.text.toString()
-                phone = editTextPhone.text.toString()
-                address = editTextAddress.text.toString()
-                isChecked = checkBoxIsChecked.isChecked
 
-                // Update shared list
-                val index = Model.shared.students.indexOfFirst { it.id == this.id }
+                val index = Model.shared.students.indexOfFirst { it.id == originalId }
                 if (index != -1) {
+
+                    name = editTextName.text.toString()
+                    id = editTextId.text.toString()
+                    phone = editTextPhone.text.toString()
+                    address = editTextAddress.text.toString()
+                    isChecked = checkBoxIsChecked.isChecked
+
                     Model.shared.students[index] = this
                 }
             }
@@ -67,6 +70,7 @@ class EditStudentActivity : AppCompatActivity() {
             setResult(RESULT_OK, resultIntent)
             finish()
         }
+
 
         // Cancel button logic
         buttonCancel.setOnClickListener {
