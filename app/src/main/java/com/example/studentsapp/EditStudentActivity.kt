@@ -12,6 +12,7 @@ import com.example.studentsapp.model.Model
 
 class EditStudentActivity : AppCompatActivity() {
 
+    private lateinit var oldId: String
     private lateinit var imageViewProfile: ImageView
     private lateinit var editTextName: EditText
     private lateinit var editTextId: EditText
@@ -20,14 +21,14 @@ class EditStudentActivity : AppCompatActivity() {
     private lateinit var checkBoxIsChecked: CheckBox
     private lateinit var buttonCancel: Button
     private lateinit var buttonSave: Button
+    private lateinit var buttonDelete: Button
     private var student: Student? = null
-    private var originalId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_student)
 
-        // Bind views
+
         imageViewProfile = findViewById(R.id.imageViewProfile)
         editTextName = findViewById(R.id.editTextName)
         editTextId = findViewById(R.id.editTextId)
@@ -36,34 +37,35 @@ class EditStudentActivity : AppCompatActivity() {
         checkBoxIsChecked = findViewById(R.id.checkBoxIsChecked)
         buttonCancel = findViewById(R.id.buttonCancel)
         buttonSave = findViewById(R.id.buttonSave)
+        buttonDelete = findViewById(R.id.buttonDelete)
 
-        // Get student from intent
+
         student = intent.getSerializableExtra("student") as? Student
         student?.let {
-            originalId = it.id
             editTextName.setText(it.name)
+            oldId = it.id
             editTextId.setText(it.id)
             editTextPhone.setText(it.phone)
             editTextAddress.setText(it.address)
             checkBoxIsChecked.isChecked = it.isChecked
         }
 
-        // Save button logic
+
         buttonSave.setOnClickListener {
             student?.apply {
+                name = editTextName.text.toString()
+                id = editTextId.text.toString()
+                phone = editTextPhone.text.toString()
+                address = editTextAddress.text.toString()
+                isChecked = checkBoxIsChecked.isChecked
 
-                val index = Model.shared.students.indexOfFirst { it.id == originalId }
+
+                val index = Model.shared.students.indexOfFirst { it.id == oldId }
                 if (index != -1) {
-
-                    name = editTextName.text.toString()
-                    id = editTextId.text.toString()
-                    phone = editTextPhone.text.toString()
-                    address = editTextAddress.text.toString()
-                    isChecked = checkBoxIsChecked.isChecked
-
                     Model.shared.students[index] = this
                 }
             }
+
 
             val resultIntent = Intent()
             resultIntent.putExtra("updatedStudent", student)
@@ -72,9 +74,17 @@ class EditStudentActivity : AppCompatActivity() {
         }
 
 
-        // Cancel button logic
         buttonCancel.setOnClickListener {
             finish()
         }
+
+
+        buttonDelete.setOnClickListener {
+           Model.shared.students.remove(student)
+            val intent = Intent(this, StudentsRecyclerViewActivity::class.java)
+            startActivity(intent)
+            finish()
+            }
+
     }
 }

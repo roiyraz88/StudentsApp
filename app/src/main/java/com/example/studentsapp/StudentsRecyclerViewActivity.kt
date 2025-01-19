@@ -22,15 +22,23 @@ class StudentsRecyclerViewActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
                 val updatedStudent = result.data?.getSerializableExtra("updatedStudent") as? Student
+                val deletedStudentId = result.data?.getStringExtra("deletedStudentId")
+
                 updatedStudent?.let {
                     val index = students.indexOfFirst { student -> student.id == it.id }
                     if (index != -1) {
-                        // Update shared list
                         Model.shared.students[index] = it
-
-                        // Update local list and notify adapter
                         students[index] = it
-                        adapter.notifyItemChanged(index)
+                        adapter.notifyItemChanged(index) // Update the RecyclerView
+                    }
+                }
+
+                deletedStudentId?.let {
+                    val index = students.indexOfFirst { student -> student.id == it }
+                    if (index != -1) {
+                        Model.shared.students.removeAt(index)
+                        students.removeAt(index)
+                        adapter.notifyItemRemoved(index)
                     }
                 }
             }
@@ -40,7 +48,7 @@ class StudentsRecyclerViewActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_students_recycler_view)
 
-        students = Model.shared.students // Synchronize with shared list
+        students = Model.shared.students
 
         recyclerView = findViewById(R.id.students_recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this)

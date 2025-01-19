@@ -11,7 +11,6 @@ class Model private constructor() {
     }
 
     init {
-        // Sample data for testing
         val sampleStudent = Student(
             name = "John Doe",
             id = "123456",

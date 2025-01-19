@@ -24,18 +24,18 @@ class StudentDetailsActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
                 val updatedStudent = result.data?.getSerializableExtra("updatedStudent") as? Student
+                val deletedStudentId = result.data?.getStringExtra("deletedStudentId")
+
                 updatedStudent?.let {
-                    // Update the local student reference
                     student = it
-
-                    // Update the shared list
-                    val index = Model.shared.students.indexOfFirst { student -> student.id == it.id }
-                    if (index != -1) {
-                        Model.shared.students[index] = it
-                    }
-
-                    // Update UI
                     updateUI()
+                }
+
+                deletedStudentId?.let {
+                    val resultIntent = Intent()
+                    resultIntent.putExtra("deletedStudentId", it)
+                    setResult(RESULT_OK, resultIntent)
+                    finish() // Close the details activity
                 }
             }
         }
@@ -52,11 +52,9 @@ class StudentDetailsActivity : AppCompatActivity() {
         avatarImageView = findViewById(R.id.student_avatar)
         editButton = findViewById(R.id.edit_student_button)
 
-        // Get student from intent
         student = intent.getSerializableExtra("student") as? Student
         updateUI()
 
-        // Edit button logic
         editButton.setOnClickListener {
             val intent = Intent(this, EditStudentActivity::class.java)
             intent.putExtra("student", student)
